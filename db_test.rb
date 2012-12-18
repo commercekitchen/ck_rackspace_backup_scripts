@@ -1,3 +1,6 @@
+    #Sets the loadpath to the current dir
+    $:.unshift File.dirname(__FILE__)
+
     require 'rubygems'
     require 'active_record'
     require 'ap'
@@ -5,6 +8,7 @@
     require 'fileutils'
     require 'pony'
     require 'open3'
+    require 'BackupConfig'
 
     include Open3
 
@@ -37,15 +41,7 @@
    end
 
 # Initialize Parameters
-  $accounts = RackspaceAccount.all
-  $databases_base_path = "/home/kevin/ruby_backups/databases/"
-  $files_base_path = "/home/kevin/ruby_backups/files/"
-  $log_base_path = "/home/kevin/ruby_backups/logs/"
-  FileUtils.mkpath $log_base_path
-  $log = Logger.new(File.join($log_base_path, 'backup.log'), 0, 100 * 1024 * 1024)  # start log over when it exceeds 100MB
-  TO_EMAIL = "kevin@majorbros.com"
-  FROM_EMAIL = "support@majorbros.com"
-  $email_error_message = ""
+   $accounts = RackspaceAccount.all
 
 def backup_databases
   #Backup Database
@@ -141,7 +137,7 @@ end
 
 #Run Backups
 backup_databases
-backup_files
+#backup_files
 unless $email_error_message.empty?
   #send_error_email
 end

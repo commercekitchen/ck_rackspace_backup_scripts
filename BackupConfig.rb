@@ -1,0 +1,11 @@
+module BackupConfig
+  # Initialize Parameters
+  $databases_base_path = "/full/path/to/database/backup/folder"
+  $files_base_path = "/full/path/to/files/backup/folder"
+  $log_base_path = "/full/path/to/backup/logs/folder"
+  FileUtils.mkpath $log_base_path
+  $log = Logger.new(File.join($log_base_path, 'backup.log'), 0, 100 * 1024 * 1024)  # start log over when it exceeds 100MB
+  TO_EMAIL = "email_to_someone@example.com"
+  FROM_EMAIL = "email_from_address@exmaple.com"
+  $email_error_message = ""
+end
