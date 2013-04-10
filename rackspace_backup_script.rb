@@ -12,14 +12,6 @@
 
     include Open3
 
-    ActiveRecord::Base.establish_connection(
-      :adapter=> "mysql2",
-      :host => "localhost",
-      :database=> "backup_configs",
-      :username=> "root",
-      :password=> "jump3,r"
-    )
-
 #  Database Classes
     class RackspaceAccount < ActiveRecord::Base
       has_many   :clients
@@ -75,8 +67,10 @@ def backup_databases
               error_message = ""
               # Backup Databases
               stdin, stdout, stderr = popen3("mysqldump -h %s -u%s -p'%s' --opt %s | gzip -9 > %s/%s.`date --iso-8601`.gz" % [database.hostname, database.username, database.password, database.database_name, database_backup_path, database.database_name])
-                stdin.close
-                error_message += stderr.read
+	      stdout.sync = true
+              $log.debug(stdout.read)
+              stdin.close
+              error_message += stderr.read
             rescue Exception => e
               error_message += "Database backup error for database #{database.database_name} ... #{e}"
             end
@@ -111,6 +105,9 @@ def backup_files
           # Backup Files
           file_backup_path = File.join($files_base_path,site.site_name)
           stdin, stdout, stderr = popen3(%q[mkdir -p %s ; touch %s; lftp -vvv -c 'open -e "set ftp:list-options -a; mirror -a --parallel=10 -v %s %s" -u %s,%s %s']  % [file_backup_path, file_backup_path, site.site_name, file_backup_path, client.ftp_user, client.ftp_pass, site.ftp_address])
+	  ap stdout.readlines
+          stdout.sync = true
+          $log.debug(stdout.read)
           stdin.close
           error_message += stderr.read
         rescue Exception => e
@@ -137,9 +134,9 @@ end
 
 #Run Backups
 backup_databases
-#backup_files
+backup_files
 unless $email_error_message.empty?
-  #send_error_email
+send_error_email
 end
 
 
