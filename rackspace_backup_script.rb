@@ -126,17 +126,21 @@ def backup_files
 end
 
 def send_error_email
-        $log.debug("Sending out error email")
-        Pony.mail(:to => TO_EMAIL, :from => FROM_EMAIL, :subject => "Error running rackspace backups", :body => $email_error_message)
-        $log.debug("Finish sending out error email")
+	if $email_error_message.empty?
+	  $email_error_message = "Nothing to report, looking good CK"
+	else
+	  $log.debug("Sending out error email")
+          Pony.mail(:to => TO_EMAIL, :from => FROM_EMAIL, :subject => "Error running rackspace backups", :body => $email_error_message)
+          $log.debug("Finish sending out error email")
+	end
 end
 
 
 #Run Backups
 backup_databases
 backup_files
-unless $email_error_message.empty?
-send_error_email
+#unless $email_error_message.empty?
+  send_error_email
 end
 
 
