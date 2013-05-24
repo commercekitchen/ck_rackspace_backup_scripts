@@ -1,4 +1,13 @@
 module BackupConfig
+
+    ActiveRecord::Base.establish_connection(
+      :adapter=> "mysql2",
+      :host => "localhost",
+      :database=> "",
+      :username=> "",
+      :password=> ""
+    )
+
   # Initialize Parameters
   $databases_base_path = "/full/path/to/database/backup/folder"
   $files_base_path = "/full/path/to/files/backup/folder"

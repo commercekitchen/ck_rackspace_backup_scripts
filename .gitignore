@@ -1,2 +1,5 @@
 BackupConfig.rb
 BackupConfig.rb.cutman
+BackupConfig.rb.local
+rackspace_accounts.sql
+logs/*
