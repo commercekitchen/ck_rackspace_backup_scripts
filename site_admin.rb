@@ -53,6 +53,7 @@ case task
     end
 
     new_client = Client.new
+    new_client.client_id = site_client_id
     new_client.organization = site_organization
     new_client.ftp_user = site_ftp_user
     new_client.ftp_pass = site_ftp_pass
