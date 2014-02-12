@@ -33,7 +33,7 @@
      belongs_to    :cloud_site
    end
 
-task = ask "Which task would you like to perform? \n 1 - Add new site \n 2 - Delete existing site \n 3 - Deactivate Site \n\n"
+task = ask "Which task would you like to perform? \n 1 - Add new site \n 2 - Delete existing site \n 3 - Deactivate Site \n 4 - List Sites \n  \n"
 
 case task
   when '1'
@@ -115,6 +115,13 @@ case task
 
     cloud_site.save
     puts "Site #{cloud_site.site_name} deactivated"
+  when '4'
+    sites =  CloudSite.all
+    puts "Site Name          Site Id"
+    sites.each do |site|
+      puts site.site_name + "  "  + site.cloud_site_id.to_s  
+    end
+
   else
     puts "Invalid Entry, bombing out..."
   end

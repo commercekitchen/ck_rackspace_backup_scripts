@@ -45,20 +45,21 @@ def backup_databases
 
       # Loop through each site
       client.cloud_sites.each do |site|
-        $log.debug("Starting database backups for site #{site.site_name}")
-        error_message = ""
+	if site.active == 1
+          $log.debug("Starting database backups for site #{site.site_name}")
+          error_message = ""
 
-        #Clear directory and create new one
-        begin
-          database_backup_path = File.join($databases_base_path, site.site_name)
-          if database_backup_path == "/"
-            abort("Database backup failed, database path = '/'")  #safety check to ensure we don't rm -rf /
-          end
-          FileUtils.rm_rf("#{database_backup_path}")
-          FileUtils.mkpath "#{database_backup_path}"
-        rescue Exception => e
-          error_message += "Database backup error for site #{site.site_name} ... #{e}"
-        end
+          #Clear directory and create new one
+          begin
+            database_backup_path = File.join($databases_base_path, site.site_name)
+            if database_backup_path == "/"
+              abort("Database backup failed, database path = '/'")  #safety check to ensure we don't rm -rf /
+            end
+            FileUtils.rm_rf("#{database_backup_path}")
+            FileUtils.mkpath "#{database_backup_path}"
+           rescue Exception => e
+             error_message += "Database backup error for site #{site.site_name} ... #{e}"
+           end
 
         #Loop through each databases
         unless site.cloud_site_databases.empty?
@@ -84,6 +85,7 @@ def backup_databases
           $log.debug("Finish database backups for database #{database.database_name}")
           end
         end
+       end
       end
     end
   end
@@ -98,6 +100,7 @@ def backup_files
 
       # Loop through each site
       client.cloud_sites.each do |site|
+	if site.active == 1
         begin
           error_message = ""
           $log.debug("Starting file backups for site #{site.site_name}")
@@ -121,6 +124,7 @@ def backup_files
         end
         $log.debug("Finish file backups for site #{site.site_name}")
       end
+    end
     end
   end
 end
